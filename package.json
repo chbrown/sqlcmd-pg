@@ -1,0 +1,32 @@
+{
+  "name": "sqlcmd-pg",
+  "version": "0.0.1",
+  "description": "sqlcmd for PostgreSQL",
+  "keywords": [
+    "sqlcmd",
+    "postgresql",
+    "pg"
+  ],
+  "homepage": "https://github.com/chbrown/sqlcmd-pg",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chbrown/sqlcmd-pg.git"
+  },
+  "bugs": {
+    "email": "Christopher Brown <io@henrian.com>",
+    "url": "http://github.com/chbrown/sqlcmd-pg/issues"
+  },
+  "license": "MIT",
+  "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
+  "dependencies": {
+    "pg": "*",
+    "sqlcmd": "~1.0.0",
+    "util-enhanced": "*"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "scripts": {
+    "test": "mocha test"
+  }
+}
