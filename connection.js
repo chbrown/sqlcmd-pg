@@ -9,7 +9,7 @@ callback: function(Error | null, [Object] | null)
 */
 Connection.prototype.query = function(sql, args, callback) {
   var self = this;
-  var listened = this.emit('log', {level: 'info', format: 'Executing SQL "%s" with variables: %j', args: [sql, args]});
+  this.emit('log', {level: 'info', format: 'Executing SQL "%s" with variables: %j', args: [sql, args]});
   pg.connect(this.options, function(err, client, done) {
     if (err) return callback ? callback(err) : err;
 
