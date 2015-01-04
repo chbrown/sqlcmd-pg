@@ -2,39 +2,98 @@
 var pg = require('pg');
 var util = require('util-enhanced');
 var Connection = require('sqlcmd/connection');
+var QueryStream = require('./stream');
 
-/** Run sql query on configured SQL connection
+/** Connection#query(sql: string | pg.Query,
+                     args: any[],
+                     callback: (error: Error, rows: object[]))
 
-callback: function(Error | null, [Object] | null)
+Run sql query or pg.Query instance on configured SQL connection with given
+parameters.
+
+sql
+  SQL query (any PostgreSQL command) or pg.Query object (determined by whether
+  sql.submit is a function)
+args
+  parameters to accompany the SQL command
+callback
+  function to call when the query has completed, or if it encountered an error
+
 */
 Connection.prototype.query = function(sql, args, callback) {
   var self = this;
   this.emit('log', {level: 'info', format: 'Executing SQL "%s" with variables: %j', args: [sql, args]});
   pg.connect(this.options, function(err, client, done) {
-    if (err) return callback ? callback(err) : err;
+    if (err) return callback(err);
 
     client.query(sql, args, function(err, result) {
+      done();
       if (err) {
         self.emit('log', {level: 'error', format: 'Query error: %j', args: [err]});
+        return callback(err);
       }
       else {
         self.emit('log', {level: 'debug', format: 'Query result: %j', args: [result]});
-      }
-      done();
-      if (callback) {
-        callback(err, result ? result.rows : null);
+        return callback(null, result ? result.rows : null);
       }
     });
   });
 };
 
-Connection.prototype.executeSQL = function(sql, callback) {
-  this.query(sql, [], callback);
+/** Connection#queryStream(sql: string, args: any[])
+
+Returns a readable Stream instance (a QueryStream from sqlcmd-pg/stream, to be
+precise).
+*/
+Connection.prototype.queryStream = function(sql, args) {
+  var self = this;
+  this.emit('log', {level: 'info',
+    format: 'Creating query stream with SQL "%s" and variables: %j', args: [sql, args]});
+
+  var stream = new QueryStream(sql, args);
+
+  pg.connect(this.options, function(err, client, done) {
+    if (err) return stream.emit('error',  err);
+
+    client.query(stream);
+    stream.on('error', function(err) {
+      done(err);
+    });
+    stream.on('end', function() {
+      self.emit('log', {level: 'debug', format: 'Query stream ended'});
+      done();
+    });
+  });
+
+  return stream;
 };
 
+/** Connection#executeSQL(sql: string,
+                          args: any[],
+                          callback: (error: Error, rows: object[]))
+    Connection#executeSQL(sql: string,
+                          callback: (error: Error, rows: object[]))
+
+Proxies directly to Connection#query (implemented in sqlcmd-pg)
+
+args is optional; pg handles the overloading.
+*/
+Connection.prototype.executeSQL = function(sql, args, callback) {
+  this.query(sql, args, callback);
+};
+
+/** Connection#executeCommand(command: sqlcmd.Command,
+                              callback: (error: Error, rows: object[]))
+
+Process a sqlcmd.Command, which boils down to a single SQL string and its
+parameters directly to Connection#query (implemented in sqlcmd-pg)
+
+pg handles the overloading of optional args.
+*/
 Connection.prototype.executeCommand = function(command, callback) {
   var sql = command.toSQL();
-  // this sql still has $variables in it, so we need to flatten it
+  // this sql still has $variables in it, so we need to translate
+  // them to the $1, $2, etc. that pg expects
   var args = [];
   // TODO: replace only $var that are not $$var (allow escaping by doubling)
   sql = sql.replace(/\$\w+/g, function(match) {
@@ -53,6 +112,15 @@ Connection.prototype.executeCommand = function(command, callback) {
   this.query(sql, args, callback);
 };
 
+/** Connection#close()
+
+Calls pg.end(), to disconnect all idle clients and dispose of all pools.
+Does not stop or close in-progress clients.
+*/
+Connection.prototype.close = function() {
+  pg.end();
+};
+
 // Database commands (uses same config except with 'postgres' database
 Connection.prototype.postgresConnection = function(callback) {
   var self = this;
@@ -64,13 +132,13 @@ Connection.prototype.postgresConnection = function(callback) {
   });
   return connection;
 };
+/** Connection#databaseExists(callback: (error: Error, exists?: boolean))
 
+Check if the database used by this connection exists. This method creates a new
+connection to the special 'postgres' database using the same connection options,
+but with a different database name.
+*/
 Connection.prototype.databaseExists = function(callback) {
-  /** Check if the database used by this connection exists.
-  This method connects to the special 'postgres' database with the same connection credentials.
-
-      callback: function(err: Error, exists?: Boolean)
-  */
   var postgres_db = this.postgresConnection();
   postgres_db.Select('pg_catalog.pg_database')
   .where('datname = ?', this.options.database)
