@@ -71,12 +71,8 @@ Connection.prototype.queryStream = function(sql, args) {
 /** Connection#executeSQL(sql: string,
                           args: any[],
                           callback: (error: Error, rows: object[]))
-    Connection#executeSQL(sql: string,
-                          callback: (error: Error, rows: object[]))
 
 Proxies directly to Connection#query (implemented in sqlcmd-pg)
-
-args is optional; pg handles the overloading.
 */
 Connection.prototype.executeSQL = function(sql, args, callback) {
   this.query(sql, args, callback);
