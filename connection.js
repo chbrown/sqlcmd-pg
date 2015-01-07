@@ -1,6 +1,6 @@
 /*jslint node: true */
 var pg = require('pg');
-var util = require('util-enhanced');
+var util = require('util');
 var Connection = require('sqlcmd/connection');
 var QueryStream = require('./stream');
 
@@ -123,10 +123,15 @@ Connection.prototype.close = function() {
 
 // Database commands (uses same config except with 'postgres' database
 Connection.prototype.postgresConnection = function(callback) {
-  var self = this;
-  var postgres_options = util.extend({}, this.options, {database: 'postgres'});
-  var connection = new Connection(postgres_options);
+  // copy over options to new object that will be modified
+  var options = {};
+  for (var key in this.options) {
+    options[key] = this.options[key];
+  }
+  options.database = 'postgres';
+  var connection = new Connection(options);
   // percolate events on postgres connection up to calling connection
+  var self = this;
   connection.on('log', function(ev) {
     self.emit('log', ev);
   });
