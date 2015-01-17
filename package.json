@@ -20,7 +20,7 @@
   "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
   "dependencies": {
     "pg": "~4.1.1",
-    "sqlcmd": "~1.0.4"
+    "sqlcmd": "~1.0.6"
   },
   "devDependencies": {
     "async": "*",
