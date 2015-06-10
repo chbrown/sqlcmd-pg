@@ -108,6 +108,23 @@ Connection.prototype.executeCommand = function(command, callback) {
   this.query(sql, args, callback);
 };
 
+/**
+Call pg.connect() with this connection's options, and callback with a Client
+from the pool. When you call doneCallback, the Client will be returned to the
+pool, and the given outerCallback will be called with the same arguments.
+
+outerCallback: (error: Error, ...args: any)
+callback: (error: Error, client: pg.Client, doneCallback: (error: Error, ...args: any) => void);
+*/
+Connection.prototype.getClient = function(outerCallback, callback) {
+  pg.connect(this.options, function(err, client, done) {
+    callback(err, client, function(/* ...args */) {
+      done();
+      outerCallback.apply(null, arguments);
+    });
+  });
+};
+
 /** Connection#close()
 
 Calls pg.end(), to disconnect all idle clients and dispose of all pools.
@@ -118,7 +135,7 @@ Connection.prototype.close = function() {
 };
 
 // Database commands (uses same config except with 'postgres' database
-Connection.prototype.postgresConnection = function(callback) {
+Connection.prototype.postgresConnection = function() {
   // copy over options to new object that will be modified
   var options = {};
   for (var key in this.options) {
