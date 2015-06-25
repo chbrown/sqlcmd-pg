@@ -1,6 +1,6 @@
 {
   "name": "sqlcmd-pg",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "sqlcmd for PostgreSQL",
   "keywords": [
     "sqlcmd",
