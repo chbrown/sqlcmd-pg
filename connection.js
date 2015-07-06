@@ -92,7 +92,7 @@ Connection.prototype.executeCommand = function(command, callback) {
   // them to the $1, $2, etc. that pg expects
   var args = [];
   // TODO: replace only $var that are not $$var (allow escaping by doubling)
-  sql = sql.replace(/\$\w+/g, function(match) {
+  sql = sql.replace(/\$[A-Za-z0-9_.]+/g, function(match) {
     var name = match.slice(1);
     var value = command.parameters[name];
     if (value === undefined) {
