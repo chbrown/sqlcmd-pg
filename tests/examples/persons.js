@@ -1,9 +1,8 @@
-/*jslint node: true */
-var async = require('async');
-var persons = require('./persons.json');
+import {eachSeries} from 'async';
+import persons from './persons.json';
 
-exports.setup = function(db, callback) {
-  db.createDatabase(function(err) {
+export function setup(db, callback) {
+  db.createDatabase(err => {
     if (err) return callback(err);
 
     db.CreateTable('person')
@@ -12,16 +11,16 @@ exports.setup = function(db, callback) {
       'name TEXT',
       'age INTEGER',
     ])
-    .execute(function(err) {
+    .execute(err => {
       if (err) return callback(err);
 
-      async.eachSeries(persons, function(person, callback) {
+      eachSeries(persons, (person, callback) => {
         db.Insert('person').set(person).execute(callback);
       }, callback);
     });
   });
-};
+}
 
-exports.teardown = function(db, callback) {
+export function teardown(db, callback) {
   db.dropDatabase(callback);
-};
+}
