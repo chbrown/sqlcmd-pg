@@ -7,14 +7,11 @@ all: $(JAVASCRIPT)
 $(BIN)/tsc $(BIN)/mocha:
 	npm install
 
-%.js: %.ts $(BIN)/tsc
-	$(BIN)/tsc
-
-compile:
+%.js %.d.ts: %.ts $(BIN)/tsc
 	$(BIN)/tsc -d
 
 clean:
 	rm -f $(JAVASCRIPT) $(TYPESCRIPT:%.ts=%.d.ts)
 
-test: $(JAVASCRIPT)
+test: $(JAVASCRIPT) $(BIN)/mocha
 	$(BIN)/mocha --compilers js:babel-core/register tests/

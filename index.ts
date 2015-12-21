@@ -75,7 +75,8 @@ export class Connection extends BaseConnection {
 
   pg handles the overloading of optional args.
   */
-  executeCommand(command: Command, callback: (error: Error, rows?: any[]) => void) {
+  executeCommand<R>(command: Command<R>,
+                    callback: (error: Error, result?: R) => void) {
     var sql = command.toSQL();
     // this sql still has $variables in it, so we need to translate
     // them to the $1, $2, etc. that pg expects
@@ -93,7 +94,7 @@ export class Connection extends BaseConnection {
       var index = args.push(value);
       return '$' + index;
     });
-    this.query(sql, args, callback);
+    this.query(sql, args, <any>callback);
   }
 
   /**
