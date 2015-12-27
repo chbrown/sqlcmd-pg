@@ -1,4 +1,3 @@
-import {eachSeries} from 'async';
 import persons from './persons.json';
 
 export function setup(db, callback) {
@@ -6,18 +5,15 @@ export function setup(db, callback) {
     if (err) return callback(err);
 
     db.CreateTable('person')
-    .add([
-      'id SERIAL PRIMARY KEY',
-      'name TEXT',
-      'age INTEGER',
-    ])
-    .execute(err => {
-      if (err) return callback(err);
-
-      eachSeries(persons, (person, callback) => {
-        db.Insert('person').set(person).execute(callback);
-      }, callback);
-    });
+    .add('id SERIAL PRIMARY KEY', 'name TEXT', 'age INTEGER')
+    .executePromise()
+    .then(() => {
+      let promises = persons.map(person => {
+        return db.Insert('person').set(person).executePromise();
+      });
+      return Promise.all(promises);
+    })
+    .then(() => callback(), reason => callback(reason));
   });
 }
 
