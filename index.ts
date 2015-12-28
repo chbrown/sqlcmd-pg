@@ -1,8 +1,28 @@
 import * as pg from 'pg';
-import {Command, Connection as BaseConnection} from 'sqlcmd';
+import {Command, Connection as BaseConnection, ConnectionOptions} from 'sqlcmd';
 import QueryStream from './stream';
 
+export interface PGConnectionOptions extends ConnectionOptions {
+  /** Database name */
+  database?: string;
+  /** Username */
+  user?: string;
+  /** Password */
+  password?: string;
+  /** Hostname (for TCP connections) */
+  host?: string;
+  /** Port (for TCP connections) */
+  port?: number;
+  /** Use SSL? */
+  ssl?: boolean;
+}
+
 export class Connection extends BaseConnection {
+  options: PGConnectionOptions;
+  constructor(options: PGConnectionOptions) {
+    super(options);
+  }
+
   /**
   Run sql query or pg.Query instance on configured SQL connection with given
   parameters.
