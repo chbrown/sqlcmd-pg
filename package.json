@@ -20,7 +20,7 @@
   "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
   "dependencies": {
     "pg": "*",
-    "sqlcmd": "2.1.1"
+    "sqlcmd": "^2.1.1"
   },
   "devDependencies": {
     "babel-core": "^5.0.0",
