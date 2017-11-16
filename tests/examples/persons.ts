@@ -1,4 +1,4 @@
-import persons from './persons.json';
+const persons = require('./persons.json');
 
 export function setup(db, callback) {
   db.createDatabase(err => {
