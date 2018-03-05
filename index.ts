@@ -85,7 +85,7 @@ export class Connection extends BaseConnection {
   /**
   Proxies directly to Connection#query (implemented in sqlcmd-pg)
   */
-  executeSQL(sql: string, args: any[], callback: (error: Error, rows?: any[]) => void) {
+  executeSQL(sql: string, args: any[], callback: (error: Error, rows?: any[]) => void): void {
     this.query(sql, args, callback);
   }
 
@@ -96,7 +96,7 @@ export class Connection extends BaseConnection {
   pg handles the overloading of optional args.
   */
   executeCommand<R>(command: Command<R>,
-                    callback: (error: Error, result?: R) => void) {
+                    callback: (error: Error, result?: R) => void): void {
     var sql = command.toSQL();
     // this sql still has $variables in it, so we need to translate
     // them to the $1, $2, etc. that pg expects
