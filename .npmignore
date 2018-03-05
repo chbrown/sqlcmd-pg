@@ -1,5 +1,5 @@
+*.ts
+!*.d.ts
 .travis.yml
-index.ts
-stream.ts
-tsconfig.json
 tests/
+tsconfig.json

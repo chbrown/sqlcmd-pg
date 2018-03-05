@@ -1,8 +1,2 @@
-index.js
-index.d.ts
-stream.js
-stream.d.ts
-tests/connection.js
-tests/examples/persons.js
-tests/query.js
-tests/stream.js
+*.js
+*.d.ts
