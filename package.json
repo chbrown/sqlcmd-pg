@@ -30,8 +30,9 @@
     "typescript": "^2.6.1"
   },
   "scripts": {
-    "prepare": "tsc -t ES6 -m commonjs -d",
-    "pretest": "tsc -p tests -t ES6 -m commonjs",
-    "test": "mocha tests/"
+    "prepare": "tsc -d",
+    "pretest": "tsc",
+    "test": "mocha tests/",
+    "clean": "tsc -d --listEmittedFiles | sed 's/^TSFILE: //' | xargs rm -v"
   }
 }

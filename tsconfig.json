@@ -1,5 +1,13 @@
 {
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6"
+  },
   "files": [
+    "tests/connection.ts",
+    "tests/examples/persons.ts",
+    "tests/query.ts",
+    "tests/stream.ts",
     "index.ts",
     "stream.ts"
   ]

@@ -1,8 +1,0 @@
-{
-  "files": [
-    "connection.ts",
-    "examples/persons.ts",
-    "query.ts",
-    "stream.ts"
-  ]
-}
