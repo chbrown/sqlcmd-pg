@@ -3,9 +3,9 @@ import 'mocha';
 
 import {Connection} from '..';
 
-var db = new Connection({database: 'sqlcmd_database'});
+const db = new Connection({database: 'sqlcmd_database'});
 
-var persons = require('./examples/persons');
+const persons = require('./examples/persons');
 
 describe('persons example', () => {
   before(done => {

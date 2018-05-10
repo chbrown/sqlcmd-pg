@@ -1,7 +1,7 @@
 import * as stream from 'stream';
 
-var Result = require('pg/lib/result');
-var prepareValue = require('pg/lib/utils').prepareValue;
+const Result = require('pg/lib/result');
+const prepareValue = require('pg/lib/utils').prepareValue;
 
 export interface FieldType {
   name: string;
@@ -21,10 +21,10 @@ export interface QueryStreamOptions {
 /**
 Create a stream.Readable that will emit rows from a postgres query
 
-@param {text} SQL parameterized query
-@param {values} Raw parameters to the SQL query
-@param {options.highWaterMark} Number of rows to buffer; defaults to 16384
-@param {options.portal} The name of this "portal" to the PostgreSQL connection; defaults to ''
+@param text SQL parameterized query
+@param values Raw parameters to the SQL query
+@param options.highWaterMark Number of rows to buffer; defaults to 16384
+@param options.portal The name of this "portal" to the PostgreSQL connection; defaults to ''
 
 Example:
 
@@ -67,7 +67,7 @@ export default class QueryStream extends stream.Readable {
   work closely with the PostgresSQL connection, we also use a few other hacks
   that go beyond _read (e.g., modifying this._readableState.reading directly).
 
-  @param {size} By default, this is the highWaterMark option (defaults to 16384).
+  @param size By default, this is the highWaterMark option (defaults to 16384).
     The stream.Readable implementation may increase the highWaterMark value.
     And the stream.Readable API says this size is just a suggestion.
     We ask for `size` rows below.
@@ -92,7 +92,7 @@ export default class QueryStream extends stream.Readable {
   available to run this query. The client will not process further queries on this
   client in the client pool until the connection emits 'readyForQuery',
 
-  @param {connect} A pg.Connection, but the pg.d.ts does not expose such a type.
+  @param connect A pg.Connection, but the pg.d.ts does not expose such a type.
   */
   submit(connection: any) {
     this.connection = connection;
@@ -149,7 +149,7 @@ export default class QueryStream extends stream.Readable {
                       length: number,
                       fieldCount: number,
                       fields: Buffer[]}) {
-    var row = this._result.parseRow(msg.fields);
+    const row = this._result.parseRow(msg.fields);
     this['_readableState'].buffer.push(row);
     this['_readableState'].length++;
   }

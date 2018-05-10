@@ -3,7 +3,7 @@ import 'mocha';
 
 import {Connection} from '..';
 
-var db = new Connection({database: 'sqlcmd_database'});
+const db = new Connection({database: 'sqlcmd_database'});
 
 describe('database create', () => {
   after(done => {

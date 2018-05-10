@@ -3,9 +3,9 @@ import 'mocha';
 
 import {Connection} from '..';
 
-var db = new Connection({database: 'sqlcmd_database'});
+const db = new Connection({database: 'sqlcmd_database'});
 
-var persons = require('./examples/persons');
+const persons = require('./examples/persons');
 
 describe('persons example (streaming)', () => {
   before(done => {
@@ -17,7 +17,7 @@ describe('persons example (streaming)', () => {
   });
 
   it('should find person named Smith aged 47', done => {
-    var ages: any = {};
+    const ages: any = {};
     db.queryStream('SELECT * FROM person', [])
     .on('data', (data: any) => {
       ages[data.name] = data.age;

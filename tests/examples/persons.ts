@@ -8,7 +8,7 @@ export function setup(db, callback) {
     .add('id SERIAL PRIMARY KEY', 'name TEXT', 'age INTEGER')
     .executePromise()
     .then(() => {
-      let promises = persons.map(person => {
+      const promises = persons.map(person => {
         return db.Insert('person').set(person).executePromise();
       });
       return Promise.all(promises);
