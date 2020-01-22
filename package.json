@@ -20,14 +20,14 @@
   "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
   "dependencies": {
     "pg": "6.2.5",
-    "sqlcmd": "^3.0.3"
+    "sqlcmd": "^3.0.4"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.0",
-    "@types/node": "^9.6.14",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^13.1.8",
     "@types/pg": "^6.1.47",
-    "mocha": "^5.1.1",
-    "typescript": "^2.8.3"
+    "mocha": "^7.0.0",
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "prepare": "tsc -d",
